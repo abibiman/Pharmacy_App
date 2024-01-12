@@ -1,0 +1,10 @@
+export { default as MedicalDiagnosisImage } from './medical-diagnosis.jpg';
+export { default as PatientNoteImage } from './Patient-Note-Illustration.png';
+export { default as Medication } from './medication.jpg';
+export { default as PrescriptionImage } from './prescriptions-alt.jpg';
+export { default as TreatmentImage } from './Treatment-Illustration.png';
+export { default as PreventiveManagement } from './preventive-man.jpg';
+export { default as WelcomeImage } from './Welc-Illustration.png';
+export { default as WelcomeImageAlt } from './Welcome-Illustration.png';
+export { default as Devices } from './devices.jpg';
+export { default as Vitals } from './vitals.jpg';
