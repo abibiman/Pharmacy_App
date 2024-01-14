@@ -48,9 +48,9 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS]
 
 const TABLE_HEAD = [
   { id: 'orderNumber', label: 'Order', width: 116 },
-  { id: 'name', label: 'Customer', width: 116  },
-  { id: 'namhe', label: 'Prescribed By' },
+  { id: 'name', label: 'Customer' },
   { id: 'createdAt', label: 'Date', width: 140 },
+  { id: 'totalQuantity', label: 'Items', width: 120, align: 'center' },
   { id: 'totalAmount', label: 'Price', width: 140 },
   { id: 'status', label: 'Status', width: 110 },
   { id: '', width: 88 },
@@ -156,17 +156,17 @@ export default function OrderListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="New Orders"
+          heading="List"
           links={[
             {
               name: 'Dashboard',
               href: paths.dashboard.root,
             },
             {
-              name: 'Orders',
+              name: 'Order',
               href: paths.dashboard.order.root,
             },
-            { name: 'New Orders' },
+            { name: 'List' },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },
@@ -174,7 +174,7 @@ export default function OrderListView() {
         />
 
         <Card>
-          {/* <Tabs
+          <Tabs
             value={filters.status}
             onChange={handleFilterStatus}
             sx={{
@@ -214,7 +214,7 @@ export default function OrderListView() {
                 }
               />
             ))}
-          </Tabs> */}
+          </Tabs>
 
           <OrderTableToolbar
             filters={filters}

@@ -47,7 +47,7 @@ export default function DialogView() {
           <ComponentBlock title="Simple">
             <SimpleDialogs />
           </ComponentBlock>
-
+ 
           <ComponentBlock title="Alerts">
             <AlertDialog />
           </ComponentBlock>

@@ -34,58 +34,58 @@ export default function OrderDetailsHistory({ history }) {
     >
       <Stack spacing={0.5}>
         <Box sx={{ color: 'text.disabled' }}>Order time</Box>
-        {fDateTime(history.orderTime)}
+        asdfasd
       </Stack>
       <Stack spacing={0.5}>
         <Box sx={{ color: 'text.disabled' }}>Payment time</Box>
-        {fDateTime(history.orderTime)}
+        asdfasdf
       </Stack>
       <Stack spacing={0.5}>
         <Box sx={{ color: 'text.disabled' }}>Delivery time for the carrier</Box>
-        {fDateTime(history.orderTime)}
+        asdfasdf
       </Stack>
       <Stack spacing={0.5}>
         <Box sx={{ color: 'text.disabled' }}>Completion time</Box>
-        {fDateTime(history.orderTime)}
+        asdfadsfa
       </Stack>
     </Stack>
   );
 
-  const renderTimeline = (
-    <Timeline
-      sx={{
-        p: 0,
-        m: 0,
-        [`& .${timelineItemClasses.root}:before`]: {
-          flex: 0,
-          padding: 0,
-        },
-      }}
-    >
-      {history.timeline.map((item, index) => {
-        const firstTimeline = index === 0;
+  // const renderTimeline = (
+  //   <Timeline
+  //     sx={{
+  //       p: 0,
+  //       m: 0,
+  //       [`& .${timelineItemClasses.root}:before`]: {
+  //         flex: 0,
+  //         padding: 0,
+  //       },
+  //     }}
+  //   >
+  //     {history.timeline.map((item, index) => {
+  //       const firstTimeline = index === 0;
 
-        const lastTimeline = index === history.timeline.length - 1;
+  //       const lastTimeline = index === history.timeline.length - 1;
 
-        return (
-          <TimelineItem key={item.title}>
-            <TimelineSeparator>
-              <TimelineDot color={(firstTimeline && 'primary') || 'grey'} />
-              {lastTimeline ? null : <TimelineConnector />}
-            </TimelineSeparator>
+  //       return (
+  //         <TimelineItem key={item.title}>
+  //           <TimelineSeparator>
+  //             <TimelineDot color={(firstTimeline && 'primary') || 'grey'} />
+  //             {lastTimeline ? null : <TimelineConnector />}
+  //           </TimelineSeparator>
 
-            <TimelineContent>
-              <Typography variant="subtitle2">{item.title}</Typography>
+  //           <TimelineContent>
+  //             <Typography variant="subtitle2">{item.title}</Typography>
 
-              <Box sx={{ color: 'text.disabled', typography: 'caption', mt: 0.5 }}>
-                {fDateTime(item.time)}
-              </Box>
-            </TimelineContent>
-          </TimelineItem>
-        );
-      })}
-    </Timeline>
-  );
+  //             <Box sx={{ color: 'text.disabled', typography: 'caption', mt: 0.5 }}>
+  //               {fDateTime(item.time)}
+  //             </Box>
+  //           </TimelineContent>
+  //         </TimelineItem>
+  //       );
+  //     })}
+  //   </Timeline>
+  // );
 
   return (
     <Card>
@@ -96,7 +96,7 @@ export default function OrderDetailsHistory({ history }) {
         direction={{ xs: 'column-reverse', md: 'row' }}
         sx={{ p: 3 }}
       >
-        {renderTimeline}
+        {/* {renderTimeline} */}
 
         {renderSummary}
       </Stack>

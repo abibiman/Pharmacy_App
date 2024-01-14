@@ -3,9 +3,9 @@ import { _mock } from './_mock';
 // ----------------------------------------------------------------------
 
 export const ORDER_STATUS_OPTIONS = [
-  { value: 'pending', label: 'Pending' },
-  { value: 'completed', label: 'Completed' },
-  { value: 'cancelled', label: 'Cancelled' },
+  { value: 'Awaiting Confirmation', label: 'Awaiting Confirmation' },
+  { value: 'Order Confirmed', label: 'Order Confirmed' },
+  { value: 'Cancelled', label: 'Cancelled' },
   { value: 'refunded', label: 'Refunded' },
 ];
 

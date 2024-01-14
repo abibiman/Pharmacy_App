@@ -78,9 +78,9 @@ export default function OrderDetailsItems({
         }}
       >
         <Scrollbar>
-          {items.map((item) => (
+            {(items || []).map((item) => (
             <Stack
-              key={item.id}
+              key={item._id}
               direction="row"
               alignItems="center"
               sx={{
@@ -89,11 +89,11 @@ export default function OrderDetailsItems({
                 borderBottom: (theme) => `dashed 2px ${theme.palette.background.neutral}`,
               }}
             >
-              <Avatar src={item.coverUrl} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} />
+              {/* <Avatar src={item.coverUrl} variant="rounded" sx={{ width: 48, height: 48, mr: 2 }} /> */}
 
               <ListItemText
-                primary={item.name}
-                secondary={item.sku}
+                primary={item.drug}
+                secondary={item.form}
                 primaryTypographyProps={{
                   typography: 'body2',
                 }}
@@ -104,10 +104,10 @@ export default function OrderDetailsItems({
                 }}
               />
 
-              <Box sx={{ typography: 'body2' }}>x{item.quantity}</Box>
+              <Box sx={{ typography: 'body2' }}>x5</Box>
 
               <Box sx={{ width: 110, textAlign: 'right', typography: 'subtitle2' }}>
-                {fCurrency(item.price)}
+                $4342
               </Box>
             </Stack>
           ))}

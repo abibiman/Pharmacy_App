@@ -26,9 +26,20 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 // ----------------------------------------------------------------------
 
 export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, onDeleteRow }) {
-  const { items, status, orderNumber, createdAt, customer, totalQuantity, subTotal } = row;
+  const {id,price, providerID, userID, patient, patientContact, patientEmail, providerTitle, providerName, facilityID, datePrescribed, statusDescription, pharmacy, medications,orderNumber,status } = row;
 
   const confirm = useBoolean();
+
+  function generateRandomString(length) {
+    const numbers = '0123456789';
+    let result = '';
+    const numbersLength = numbers.length;
+    for (let i = 0; i < length; i++) {
+        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
+    }
+    return result;
+}
+  
 
   const collapse = useBoolean();
 
@@ -37,7 +48,37 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
   const renderPrimary = (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        <Checkbox checked={selected} onClick={onSelectRow} />
+        #-{orderNumber}{generateRandomString(4)}
+      </TableCell>
+
+      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
+        <Avatar alt={patient} src={patient} sx={{ mr: 2 }} />
+
+        <ListItemText
+          primary={patient}
+          secondary={patientContact}
+          primaryTypographyProps={{ typography: 'body2' }}
+          secondaryTypographyProps={{
+            component: 'span',
+            color: 'text.disabled',
+          }}
+        />
+      </TableCell>
+
+
+
+      <TableCell>
+        
+        <ListItemText
+          primary={`${providerTitle} ${providerName}`}
+          secondary="+23334352547"
+          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
+          secondaryTypographyProps={{
+            mt: 0.5,
+            component: 'span',
+            typography: 'caption',
+          }}
+        />
       </TableCell>
 
       <TableCell>
@@ -50,55 +91,24 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
             },
           }}
         >
-          {orderNumber}
+          {datePrescribed}
         </Box>
       </TableCell>
 
-      <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-        <Avatar alt={customer.name} src={customer.avatarUrl} sx={{ mr: 2 }} />
 
-        <ListItemText
-          primary={customer.name}
-          secondary={customer.email}
-          primaryTypographyProps={{ typography: 'body2' }}
-          secondaryTypographyProps={{
-            component: 'span',
-            color: 'text.disabled',
-          }}
-        />
-      </TableCell>
-
-      
 
       <TableCell>
-        <ListItemText
-          primary="Dr Collins Kwarteng"
-          secondary="054778243221"
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
+        <Label
+          variant="soft"
+          color={
+
+            (!price   && 'error') ||
+            'default'
+          }
+        >
+          {price?price:'Price Pendinga'}
+        </Label>
       </TableCell>
-
-      <TableCell>
-        <ListItemText
-          primary={format(new Date(createdAt), 'dd MMM yyyy')}
-          secondary={format(new Date(createdAt), 'p')}
-          primaryTypographyProps={{ typography: 'body2', noWrap: true }}
-          secondaryTypographyProps={{
-            mt: 0.5,
-            component: 'span',
-            typography: 'caption',
-          }}
-        />
-      </TableCell>
-
-
-
-      <TableCell> {fCurrency(subTotal)} </TableCell>
 
       <TableCell>
         <Label
@@ -144,7 +154,7 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
           sx={{ bgcolor: 'background.neutral' }}
         >
           <Stack component={Paper} sx={{ m: 1.5 }}>
-            {items.map((item) => (
+          {(medications || []).map((item) => (
               <Stack
                 key={item.id}
                 direction="row"
@@ -156,15 +166,15 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
                   },
                 }}
               >
-                <Avatar
+                {/* <Avatar
                   src={item.coverUrl}
                   variant="rounded"
                   sx={{ width: 48, height: 48, mr: 2 }}
-                />
+                /> */}
 
                 <ListItemText
-                  primary={item.name}
-                  secondary={item.sku}
+                  primary={item.drug}
+                  secondary={item.form}
                   primaryTypographyProps={{
                     typography: 'body2',
                   }}
@@ -175,9 +185,9 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
                   }}
                 />
 
-                <Box>x{item.quantity}</Box>
+                <Box>x{5}</Box>
 
-                <Box sx={{ width: 110, textAlign: 'right' }}>{fCurrency(item.price)}</Box>
+                <Box sx={{ width: 110, textAlign: 'right' }}>{item.price?`GH₵ ${item.price}`:'Price N/A'}</Box>
               </Stack>
             ))}
           </Stack>
@@ -205,8 +215,8 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
           }}
           sx={{ color: 'error.main' }}
         >
-          <Iconify icon="solar:trash-bin-trash-bold" />
-          Delete
+          <Iconify icon="icons8:cancel" />
+          Cancel Order
         </MenuItem>
 
         <MenuItem
@@ -214,9 +224,9 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
             onViewRow();
             popover.onClose();
           }}
-        >
+        > 
           <Iconify icon="solar:eye-bold" />
-          View
+          View Order
         </MenuItem>
       </CustomPopover>
 

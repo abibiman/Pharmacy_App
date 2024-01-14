@@ -20,7 +20,14 @@ import DeviceUsage from '../device-usage';
 import BloodPressureCard from '../blood-pressure-card';
 import AppWidgetSummary from '../app-widget-summary';
 import { useTheme } from '@mui/material/styles';
+import newOrder from 'src/assets/images/checklist.png'
+import pendingOrder from 'src/assets/images/clockwise.png'
+import emergency from 'src/assets/images/alarm.png'
+import delayed from 'src/assets/images/clock.png'
+import completed from 'src/assets/images/checked.png'
+import waitOrder from 'src/assets/images/wait.png'
 import { de } from 'date-fns/locale';
+
 
 const demoAPI = [
   {
@@ -200,12 +207,15 @@ const demoAPI = [
 // ----------------------------------------------------------------------
 
 export default function OverviewAppView() {
+
   const theme = useTheme();
   const { user } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
 
   const settings = useSettingsContext();
+
+  
 
   const getAllUserAppointments = async () => {
     setLoading(true);
@@ -235,7 +245,7 @@ export default function OverviewAppView() {
             title="New Orders"
             percent={2.6}
             total={17}
-            im = "https://cdn3.iconfinder.com/data/icons/rest/30/add_order-512.png"
+            im = {newOrder}
             chart={{
               series: [5, 18, 12, 51, 68, 11, 39, 37, 27, 20],
             }}
@@ -245,7 +255,7 @@ export default function OverviewAppView() {
         <Grid xs={12} md={4}>
           <AppWidgetSummary
             title="Order In Progress"
-            im = "https://png.pngitem.com/pimgs/s/252-2523643_order-png-image-with-transparent-background-transparent-background.png"
+            im = {waitOrder}
             percent={0.2}
             total={12}
             chart={{
@@ -258,7 +268,7 @@ export default function OverviewAppView() {
 
         <Grid xs={12} md={4}>
           <AppWidgetSummary
-            im="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRm6Ke7alR9rLor9rQkb9E4OCjpqZ7qsSXzBA&usqp=CAU"
+            im={completed}
             title="Completd Orders"
             percent={-0.1}
             total={34}
@@ -270,6 +280,8 @@ export default function OverviewAppView() {
         </Grid>
 
 
+
+ 
 
 
 
@@ -288,6 +300,7 @@ export default function OverviewAppView() {
             ]}
           />
         </Grid>
+
 
       </Grid>
     </Container>

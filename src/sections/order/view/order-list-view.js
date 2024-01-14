@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect,useContext } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
@@ -9,9 +9,6 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import { AuthContext } from 'src/auth/context/jwt';
-import customAxios from 'src/utils/customAxios';
-
 import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 // routes
@@ -44,7 +41,9 @@ import {
 import OrderTableRow from '../order-table-row';
 import OrderTableToolbar from '../order-table-toolbar';
 import OrderTableFiltersResult from '../order-table-filters-result';
-import axios from 'axios'
+import axios from 'axios';
+// auth
+import { useAuthContext } from "src/auth/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -52,28 +51,24 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS]
 
 const TABLE_HEAD = [
   { id: 'orderNumber', label: 'Order', width: 116 },
-  { id: 'name', label: 'Customer', width: 116  },
-  { id: 'namhe', label: 'Prescribed By' },
-  { id: 'createdAt', label: 'Date', width: 140 },
-  { id: 'totalAmount', label: 'Price', width: 140 },
+  { id: 'name', label: 'Patient' },
+  { id: 'names', label: 'Prescribed By' },
+  { id: 'createdAt', label: 'Date Ordered'},
+  { id: 'totalAmount', label: 'Total Price', width: 140 },
   { id: 'status', label: 'Status', width: 110 },
   { id: '', width: 88 },
 ];
 
 const defaultFilters = {
-
+  name: '',
   status: 'all',
   startDate: null,
   endDate: null,
-  medication: []
 };
 
 // ----------------------------------------------------------------------
 
 export default function OrderListView() {
-  const { user } = useContext(AuthContext);
-
-
   const table = useTable({ defaultOrderBy: 'orderNumber' });
 
   const settings = useSettingsContext();
@@ -81,34 +76,13 @@ export default function OrderListView() {
   const router = useRouter();
 
   const confirm = useBoolean();
+  const { logout, user } = useAuthContext();
+  const { token, facilityID } = user || {};
 
-  const [tableData, setTableData] = useState(_orders);
+  const [tempData,setTempData] = useState()
+  const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
-
-  const [tempData,setTempData] = useState([])
-
-
-
-
-  useEffect( ()=> {
-    const config = {
-      headers: {
-        Authorization: `Basic ${user.token}`
-      }
-    };
-
-    axios.get(`https://abibiman-api.onrender.com/prescriptions/facility/pending/${user.facilityID}`,config)
-    .then(res => {
-      setTempData(res.data.data)
-      setTableData(tempData)
-    })
-    .catch(err => {
-      console.log(err.message)
-    })
-  },[tempData, user.facilityID, user.token])
-
-
 
   const dateError =
     filters.startDate && filters.endDate
@@ -122,6 +96,23 @@ export default function OrderListView() {
     dateError,
   });
 
+
+
+  useEffect(()=> {
+    axios.get(`https://abibiman-api.onrender.com/prescriptions/facility/pending/${facilityID}`,{
+      headers: {
+        Authorization: `Basic ${token}`
+      }
+    })
+    .then(res => {
+      setTableData(res.data.data)
+      console.log(res.data)
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
+  },[])
+
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
     table.page * table.rowsPerPage + table.rowsPerPage
@@ -130,7 +121,7 @@ export default function OrderListView() {
   const denseHeight = table.dense ? 52 : 72;
 
   const canReset =
-  filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
+    !!filters.name || filters.status !== 'all' || (!!filters.startDate && !!filters.endDate);
 
   const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
 
@@ -195,7 +186,7 @@ export default function OrderListView() {
               href: paths.dashboard.root,
             },
             {
-              name: 'Orders',
+              name: 'Order',
               href: paths.dashboard.order.root,
             },
             { name: 'All Orders' },
@@ -206,47 +197,7 @@ export default function OrderListView() {
         />
 
         <Card>
-          {/* <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'completed' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'cancelled' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {tab.value === 'all' && _orders.length}
-                    {tab.value === 'completed' &&
-                      _orders.filter((order) => order.status === 'completed').length}
 
-                    {tab.value === 'pending' &&
-                      _orders.filter((order) => order.status === 'pending').length}
-                    {tab.value === 'cancelled' &&
-                      _orders.filter((order) => order.status === 'cancelled').length}
-                    {tab.value === 'refunded' &&
-                      _orders.filter((order) => order.status === 'refunded').length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs> */}
 
           <OrderTableToolbar
             filters={filters}
@@ -375,7 +326,7 @@ export default function OrderListView() {
 // ----------------------------------------------------------------------
 
 function applyFilter({ inputData, comparator, filters, dateError }) {
-  const { status, startDate, endDate } = filters;
+  const { status, name, startDate, endDate } = filters;
 
   const stabilizedThis = inputData.map((el, index) => [el, index]);
 
@@ -387,14 +338,14 @@ function applyFilter({ inputData, comparator, filters, dateError }) {
 
   inputData = stabilizedThis.map((el) => el[0]);
 
-  // if (name) {
-  //   inputData = inputData.filter(
-  //     (order) =>
-  //       order.orderNumber.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-  //       order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
-  //       order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
-  //   );
-  // }
+  if (name) {
+    inputData = inputData.filter(
+      (order) =>
+        order.orderNumber.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        order.customer.name.toLowerCase().indexOf(name.toLowerCase()) !== -1 ||
+        order.customer.email.toLowerCase().indexOf(name.toLowerCase()) !== -1
+    );
+  }
 
   if (status !== 'all') {
     inputData = inputData.filter((order) => order.status === status);

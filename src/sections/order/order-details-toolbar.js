@@ -57,7 +57,7 @@ export default function OrderDetailsToolbar({
             </Stack>
 
             <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-              {fDateTime(createdAt)}
+              {createdAt}
             </Typography>
           </Stack>
         </Stack>

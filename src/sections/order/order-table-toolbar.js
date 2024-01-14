@@ -87,7 +87,7 @@ export default function OrderTableToolbar({
             fullWidth
             value={filters.name}
             onChange={handleFilterName}
-            placeholder="Search medication or order number..."
+            placeholder="Search customer or order number..."
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -97,12 +97,12 @@ export default function OrderTableToolbar({
             }}
           />
 
-          <IconButton onClick={popover.onOpen}>
+          {/* <IconButton onClick={popover.onOpen}>
             <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
+          </IconButton> */}
         </Stack>
 
-        {canReset && (
+        {/* {canReset && (
           <Button
             color="error"
             sx={{ flexShrink: 0 }}
@@ -110,11 +110,11 @@ export default function OrderTableToolbar({
             startIcon={<Iconify icon="solar:trash-bin-trash-bold" />}
           >
             Clear
-          </Button>
-        )}
+          </Button> */}
+        
       </Stack>
 
-      <CustomPopover
+      {/* <CustomPopover
         open={popover.open}
         onClose={popover.onClose}
         arrow="right-top"
@@ -146,7 +146,7 @@ export default function OrderTableToolbar({
           <Iconify icon="solar:export-bold" />
           Export
         </MenuItem>
-      </CustomPopover>
+      </CustomPopover> */}
     </>
   );
 }

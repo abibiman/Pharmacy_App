@@ -41,15 +41,14 @@ export default function AppointmentTableRow({
   setTableData,
 }) {
   const {
-    appointmentType,
-    appointmentDate,
-    providerName,
-    status,
+    orderNo,
+    patient,
+    doctor,
+    reqDate,
+    orderType,
     photo,
-    providerCategory,
-    id,
-    patientName,
-    meetingLink,
+    priority,
+    status
   } = row;
 
   // useState
@@ -60,31 +59,31 @@ export default function AppointmentTableRow({
   const { user } = useContext(AuthContext);
   const { token, userID } = user;
 
-  const dateTime = new Date(appointmentDate);
+  // const dateTime = new Date(appointmentDate);
   const currentDate = new Date();
 
   // Extract date components
-  const year = dateTime.getFullYear();
-  const month = dateTime.getMonth() + 1;
-  const day = dateTime.getDate();
+  // const year = dateTime.getFullYear();
+  // const month = dateTime.getMonth() + 1;
+  // const day = dateTime.getDate();
 
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentDay = currentDate.getDate();
+  // const currentYear = currentDate.getFullYear();
+  // const currentMonth = currentDate.getMonth() + 1;
+  // const currentDay = currentDate.getDate();
 
-  // Extract time components
-  const hours = dateTime.getUTCHours();
-  const minutes = dateTime.getUTCMinutes();
-  const seconds = dateTime.getUTCSeconds();
+  // // Extract time components
+  // const hours = dateTime.getUTCHours();
+  // const minutes = dateTime.getUTCMinutes();
+  // const seconds = dateTime.getUTCSeconds();
 
   // const currentHours = dateTime.getUTCHours();
   // const currentMinutes = dateTime.getUTCMinutes();
   // const currentSeconds = dateTime.getUTCSeconds();
 
-  const date = `${year}-${month}-${day}`;
-  const time = `${hours}:${minutes}:${seconds}`;
+  // const date = `${year}-${month}-${day}`;
+  // const time = `${hours}:${minutes}:${seconds}`;
 
-  const presentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+  // const presentDate = `${currentYear}-${currentMonth}-${currentDay}`;
   // const presentTime = `${currentHours}:${currentMinutes}:${currentSeconds}`;
 
   const confirm = useBoolean();
@@ -109,19 +108,19 @@ export default function AppointmentTableRow({
     }
   };
 
-  const handleCancelAppointment = async () => {
-    try {
-      await customAxios.patch(`/appointments/cancel/${id}`, {
-        active: false,
-        status: 'Pending',
-      });
-      getAllUserAppointments();
-      setOpenPopUp(false);
-      popover.onClose();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const handleCancelAppointment = async () => {
+  //   try {
+  //     await customAxios.patch(`/appointments/cancel/${id}`, {
+  //       active: false,
+  //       status: 'Pending',
+  //     });
+  //     getAllUserAppointments();
+  //     setOpenPopUp(false);
+  //     popover.onClose();
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
@@ -135,7 +134,7 @@ export default function AppointmentTableRow({
         </TableCell>
 
         <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar alt={providerName} sx={{ mr: 2 }} src={photo} />
+          <Avatar alt={patient} sx={{ mr: 2 }} src={photo || 'https://static.vecteezy.com/system/resources/previews/020/911/740/original/user-profile-icon-profile-avatar-user-icon-male-icon-face-icon-profile-icon-free-png.png' } />
           {/* {providerName}
           </Avatar> */}
 
@@ -143,7 +142,7 @@ export default function AppointmentTableRow({
             disableTypography
             primary={
               <Typography variant="body2" noWrap>
-                {providerName}
+                {doctor}
               </Typography>
             }
             secondary={
@@ -153,16 +152,16 @@ export default function AppointmentTableRow({
                 onClick={onViewRow}
                 sx={{ color: 'text.disabled', cursor: 'pointer', textTransform: 'capitalize' }}
               >
-                {providerCategory}
+                {patient}
               </Link>
             }
           />
         </TableCell>
 
-        <TableCell>{date}</TableCell>
-        <TableCell>{time}</TableCell>
+        <TableCell>test</TableCell>
+        <TableCell>test</TableCell>
 
-        <TableCell>{appointmentType}</TableCell>
+        <TableCell>test</TableCell>
 
         <TableCell>
           <Label
@@ -177,7 +176,7 @@ export default function AppointmentTableRow({
           </Label>
         </TableCell>
 
-        <TableCell>
+        {/* <TableCell>
           <Button
             disabled={!(status === 'approved' && presentDate === date)}
             // disabled={!(presentDate === date)}
@@ -194,7 +193,7 @@ export default function AppointmentTableRow({
           >
             Join
           </Button>
-        </TableCell>
+        </TableCell> */}
 
         <TableCell align="right" sx={{ px: 1 }}>
           <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>
@@ -235,7 +234,7 @@ export default function AppointmentTableRow({
         </MenuItem>
       </CustomPopover>
 
-      <ConfirmDialog
+      {/* <ConfirmDialog
         open={openPopUp}
         onClose={() => setOpenPopUp(false)}
         title="Cancel"
@@ -267,7 +266,7 @@ export default function AppointmentTableRow({
             Cancel
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 }

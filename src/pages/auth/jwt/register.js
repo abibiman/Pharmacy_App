@@ -8,7 +8,7 @@ export default function RegisterPage() {
   return (
     <>
       <Helmet>
-        <title> Telical Pharmacy: Register</title>
+        <title> Jwt: Register</title>
       </Helmet>
 
       <JwtRegisterView />

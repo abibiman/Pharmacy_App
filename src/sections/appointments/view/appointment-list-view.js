@@ -47,11 +47,106 @@ import AppointmentsTableToolbar from '../appointment-table-toolbar';
 
 // ----------------------------------------------------------------------
 
+const demoAPI = [
+  {
+    orderNo: 'LO-21341',
+    patient: "John Ansah",
+    doctor: 'Dr. Phyllis Dwamenah',
+    reqDate: '2023-12-22',
+    orderType: 'EKG',
+    priority: 'Emergency',
+    status: 'Awaiting'
+  },
+  {
+    orderNo: 'LO-21342',
+    patient: "Alice Koomson",
+    doctor: 'Dr. Mark Appah',
+    reqDate: '2023-12-21',
+    orderType: 'Blood Test',
+    priority: 'Routine',
+    status: 'Completed'
+  },
+  {
+    orderNo: 'LO-21343',
+    patient: "Michael Suhum",
+    doctor: 'Dr. Susan Danquah',
+    reqDate: '2023-12-20',
+    orderType: 'MRI',
+    priority: 'Urgent',
+    status: 'In Progress'
+  },
+  {
+    orderNo: 'LO-21344',
+    patient: "Karen Davis",
+    doctor: 'Dr. John Okeke',
+    reqDate: '2023-12-19',
+    orderType: 'CT Scan',
+    priority: 'Emergency',
+    status: 'Awaiting'
+  },
+  {
+    orderNo: 'LO-21345',
+    patient: "Robert Bomah",
+    doctor: 'Dr. Angela Yen',
+    reqDate: '2023-12-18',
+    orderType: 'Ultrasound',
+    priority: 'Routine',
+    status: 'Completed'
+  },
+  {
+    orderNo: 'LO-21346',
+    patient: "Linda Dovu",
+    doctor: 'Dr. Mohammed Alhassan',
+    reqDate: '2023-12-17',
+    orderType: 'X-Ray',
+    priority: 'Urgent',
+    status: 'In Progress'
+  },
+  {
+    orderNo: 'LO-21347',
+    patient: "Emily Clark",
+    doctor: 'Dr. Lisa Tetteh',
+    reqDate: '2023-12-16',
+    orderType: 'Biopsy',
+    priority: 'Emergency',
+    status: 'Awaiting'
+  },
+  {
+    orderNo: 'LO-21348',
+    patient: "James Achia",
+    doctor: 'Dr. Kevin Tannoh',
+    reqDate: '2023-12-15',
+    orderType: 'Echocardiogram',
+    priority: 'Routine',
+    status: 'Completed'
+  },
+  {
+    orderNo: 'LO-21349',
+    patient: "Jessica Sarpong",
+    doctor: 'Dr. Amy Sekyi',
+    reqDate: '2023-12-14',
+    orderType: 'PET Scan',
+    priority: 'Urgent',
+    status: 'In Progress'
+  },
+  {
+    orderNo: 'LO-21350',
+    patient: "William Banahene",
+    doctor: 'Dr. Carlos Oppong',
+    reqDate: '2023-12-13',
+    orderType: 'Mammogram',
+    priority: 'Emergency',
+    status: 'Awaiting'
+  }
+];
+
+
 const TABLE_HEAD = [
-  { id: 'invoiceNumber', label: 'Provider/Doctor' },
-  { id: 'createDate', label: 'Date' },
-  { id: 'dueDate', label: 'Time' },
-  { id: 'price', label: 'Type' },
+  { id: 'invoiceNumber', label: 'Order No.' },
+  { id: 'createDate', label: 'Patient' },
+  { id: 'dueDate', label: 'Doctor' },
+  { id: 'price', label: 'Order Type' },
+  { id: 'prices', label: 'Order Date' },
   { id: 'status', label: 'Status' },
   { id: '' },
   { id: '' },
@@ -229,21 +324,7 @@ export default function AppointmentListView() {
               name: 'List',
             },
           ]}
-          action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.providers.collection}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-              sx={{
-                '@media (max-width: 475px)': {
-                  mt: 2,
-                },
-              }}
-            >
-              New Appointment
-            </Button>
-          }
+
           sx={{
             mb: { xs: 3, md: 5 },
           }}
@@ -279,7 +360,7 @@ export default function AppointmentListView() {
               />
             ))}
           </Tabs> */}
-
+{/* 
             <AppointmentsTableToolbar
               filters={filters}
               onFilters={handleFilters}
@@ -287,7 +368,7 @@ export default function AppointmentListView() {
               dateError={dateError}
               appointmentOptions={defaultFilters.defaultValues}
               status={defaultFilters.status}
-            />
+            /> */}
 
             {/* {canReset && (
             <AppointmentTableFiltersResult
@@ -360,7 +441,7 @@ export default function AppointmentListView() {
                   />
 
                   <TableBody>
-                    {dataFiltered
+                    {demoAPI
                       .slice(
                         table.page * table.rowsPerPage,
                         table.page * table.rowsPerPage + table.rowsPerPage

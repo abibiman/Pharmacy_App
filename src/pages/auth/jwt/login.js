@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Telical Pharmacy: Login</title>
+        <title> Abibiman: Login</title>
       </Helmet>
 
       <JwtLoginView />

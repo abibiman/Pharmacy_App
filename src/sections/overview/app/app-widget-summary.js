@@ -10,9 +10,14 @@ import { fNumber, fPercent } from 'src/utils/format-number';
 // components
 import Iconify from 'src/components/iconify';
 import Chart from 'src/components/chart';
+import newOrder from 'src/assets/images/checklist.png'
+import pendingOrder from 'src/assets/images/work-in-progress.png'
+import emergency from 'src/assets/images/alarm.png'
+import delayed from 'src/assets/images/clock.png'
+import completed from 'src/assets/images/checked.png'
+import waitOrder from 'src/assets/images/wait.png'
 
-
-
+// ----------------------------------------------------------------------
 
 export default function AppWidgetSummary({ title, percent, total, chart,im, sx, ...other }) {
   const theme = useTheme();
@@ -74,7 +79,7 @@ export default function AppWidgetSummary({ title, percent, total, chart,im, sx, 
         <Typography variant="h3">{fNumber(total)}</Typography>
       </Box>
 
-      {/* <img alt="im" src={im} width={40} height={36} /> */}
+      <img alt="im" src={im} width={40} height={36} />
     </Card>
   );
 }

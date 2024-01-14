@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { useState, useCallback } from 'react';
+import { useState, useCallback ,useContext,useEffect} from 'react';
 // @mui
 import Stack from '@mui/material/Stack';
 import Container from '@mui/material/Container';
@@ -15,27 +15,58 @@ import OrderDetailsInfo from '../order-details-info';
 import OrderDetailsItems from '../order-details-item';
 import OrderDetailsToolbar from '../order-details-toolbar';
 import OrderDetailsHistory from '../order-details-history';
+import { useParams } from 'react-router'
+import axios from 'axios'
+import { useAuthContext } from "src/auth/hooks";
+
 
 // ----------------------------------------------------------------------
 
-export default function OrderDetailsView({ id }) {
+export default function OrderDetailsView() {
+  const {id} = useParams()
+  const {  user } = useAuthContext();
+  const { token,facilityID } = user || {};
+  const [orderData,setOrderData] = useState({})
+  const [patientData,setPatientData] = useState({})
+  const [doctorData,setDoctorData] = useState({})
+  const [allData,setAllData] = useState({})
+
+  useEffect(() => {
+    axios.get(`https://abibiman-api.onrender.com/prescriptions/facility/details/${id}`, {
+      headers: {
+        Authorization: `Basic ${token}`
+      }
+    })
+    .then(res => {
+      setAllData(res.data)
+      console.log(allData)
+      setOrderData(res.data.prescriptionData);
+      setPatientData(res.data.patientData);
+      setDoctorData(res.data.doctorData);
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }, [allData, facilityID, id, token]); // Removed orderData from dependencies
+
+
+
   const settings = useSettingsContext();
 
-  const currentOrder = _orders.filter((order) => order.id === id)[0];
 
-  const [status, setStatus] = useState(currentOrder.status);
+  const [status, setStatus] = useState("");
 
   const handleChangeStatus = useCallback((newValue) => {
     setStatus(newValue);
-  }, []);
+  }, [setStatus]);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <OrderDetailsToolbar
         backLink={paths.dashboard.order.root}
-        orderNumber={currentOrder.orderNumber}
-        createdAt={currentOrder.createdAt}
-        status={status}
+        orderNumber={orderData.id}
+        createdAt={orderData.datePrescribed}
+        status=""
         onChangeStatus={handleChangeStatus}
         statusOptions={ORDER_STATUS_OPTIONS}
       />
@@ -44,24 +75,21 @@ export default function OrderDetailsView({ id }) {
         <Grid xs={12} md={8}>
           <Stack spacing={3} direction={{ xs: 'column-reverse', md: 'column' }}>
             <OrderDetailsItems
-              items={currentOrder.items}
-              taxes={currentOrder.taxes}
-              shipping={currentOrder.shipping}
-              discount={currentOrder.discount}
-              subTotal={currentOrder.subTotal}
-              totalAmount={currentOrder.totalAmount}
+              items={orderData.medications}
+              taxes={0}
+              shipping={orderData.deliveryFee}
+              discount={0}
+              subTotal={orderData.totalPrice}
+              totalAmount={orderData.totalPrice}
             />
 
-            <OrderDetailsHistory history={currentOrder.history} />
+            {/* <OrderDetailsHistory history={currentOrder.history} /> */}
           </Stack>
         </Grid>
 
         <Grid xs={12} md={4}>
           <OrderDetailsInfo
-            customer={currentOrder.customer}
-            delivery={currentOrder.delivery}
-            payment={currentOrder.payment}
-            shippingAddress={currentOrder.shippingAddress}
+            customer={doctorData}
           />
         </Grid>
       </Grid>

@@ -169,30 +169,21 @@ export default function ProvidersListView() {
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-        heading="Service Categories"
+        heading="Order Types"
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           {
-            name: 'Service Providers',
+            name: 'Orders',
             href: paths.dashboard.providers.root,
           },
-          { name: 'Categories' },
+          { name: 'Order Types' },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <Stack
-        spacing={2.5}
-        sx={{
-          mb: { xs: 3, md: 5 },
-        }}
-      >
-        {renderFilters}
 
-        {canReset && renderResults}
-      </Stack>
 
       {notFound && <EmptyContent filled title="No Data" sx={{ py: 10 }} />}
 

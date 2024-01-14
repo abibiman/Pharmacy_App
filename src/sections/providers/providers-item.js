@@ -12,7 +12,7 @@ import Image from 'src/components/image';
 // ----------------------------------------------------------------------
 
 export default function ProvidersItem({ provider }) {
-  const { category } = provider;
+  const { name } = provider;
   // console.log(provider);
 
   function toSentenceCase(str) {
@@ -33,16 +33,7 @@ export default function ProvidersItem({ provider }) {
     >
       <Card>
         <Stack sx={{ p: 3, pb: 2 }}>
-          <Box sx={{ mb: 2 }}>
-            <Image
-              src={provider.imageUrl}
-              alt={category}
-              width={300}
-              height={150}
-              objectFit="cover"
-              sx={{ borderRadius: '16px' }}
-            />
-          </Box>
+
 
           <ListItemText
             sx={{ mb: 1 }}
@@ -52,7 +43,7 @@ export default function ProvidersItem({ provider }) {
                 href={`/dashboard/providers/specialty/${provider.category}`}
                 color="inherit"
               >
-                {toSentenceCase(provider.category)}
+                {toSentenceCase(provider.name)}
               </Link>
             }
             primaryTypographyProps={{
@@ -66,15 +57,6 @@ export default function ProvidersItem({ provider }) {
             }}
           />
 
-          <Stack
-            spacing={0.5}
-            direction="row"
-            alignItems="center"
-            sx={{ color: 'primary.main', typography: 'caption' }}
-          >
-            <Iconify width={16} icon="solar:users-group-rounded-bold" />
-            {12} Listed
-          </Stack>
         </Stack>
       </Card>
     </Link>
