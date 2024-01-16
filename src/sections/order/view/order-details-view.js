@@ -31,6 +31,8 @@ export default function OrderDetailsView() {
   const [doctorData,setDoctorData] = useState({})
   const [allData,setAllData] = useState({})
 
+  const getData =
+
   useEffect(() => {
     axios.get(`https://abibiman-api.onrender.com/prescriptions/facility/details/${id}`, {
       headers: {
@@ -38,16 +40,18 @@ export default function OrderDetailsView() {
       }
     })
     .then(res => {
-      setAllData(res.data)
-      console.log(allData)
-      setOrderData(res.data.prescriptionData);
-      setPatientData(res.data.patientData);
-      setDoctorData(res.data.doctorData);
+      // console.log("API Response:", res.data); // Debugging the API response
+      setAllData(res.data); // Simplified state update
     })
     .catch(err => {
-      console.log(err);
+      console.error("API Error:", err);
     })
-  }, [allData, facilityID, id, token]); // Removed orderData from dependencies
+  }, [id, token]);
+  
+  useEffect(() => {
+    console.log(allData); // This will log updated allData
+    
+  }, [allData]);
 
 
 
@@ -64,8 +68,7 @@ export default function OrderDetailsView() {
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <OrderDetailsToolbar
         backLink={paths.dashboard.order.root}
-        orderNumber={orderData.id}
-        createdAt={orderData.datePrescribed}
+        data={allData}
         status=""
         onChangeStatus={handleChangeStatus}
         statusOptions={ORDER_STATUS_OPTIONS}
@@ -75,6 +78,7 @@ export default function OrderDetailsView() {
         <Grid xs={12} md={8}>
           <Stack spacing={3} direction={{ xs: 'column-reverse', md: 'column' }}>
             <OrderDetailsItems
+              data={allData}
               items={orderData.medications}
               taxes={0}
               shipping={orderData.deliveryFee}
@@ -89,7 +93,7 @@ export default function OrderDetailsView() {
 
         <Grid xs={12} md={4}>
           <OrderDetailsInfo
-            customer={doctorData}
+            customer={allData}
           />
         </Grid>
       </Grid>

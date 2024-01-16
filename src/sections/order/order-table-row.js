@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { format } from 'date-fns';
 // @mui
 import Box from '@mui/material/Box';
@@ -22,6 +23,7 @@ import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 import { ConfirmDialog } from 'src/components/custom-dialog';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import PricePopup from './view/price-popup';
 
 // ----------------------------------------------------------------------
 
@@ -30,15 +32,9 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
 
   const confirm = useBoolean();
 
-  function generateRandomString(length) {
-    const numbers = '0123456789';
-    let result = '';
-    const numbersLength = numbers.length;
-    for (let i = 0; i < length; i++) {
-        result += numbers.charAt(Math.floor(Math.random() * numbersLength));
-    }
-    return result;
-}
+  const [priceDialog, setPriceDialog] = useState(false);
+
+
   
 
   const collapse = useBoolean();
@@ -48,7 +44,7 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
   const renderPrimary = (
     <TableRow hover selected={selected}>
       <TableCell padding="checkbox">
-        #-{orderNumber}{generateRandomString(4)}
+        #-{orderNumber}
       </TableCell>
 
       <TableCell sx={{ display: 'flex', alignItems: 'center' }}>
@@ -106,7 +102,7 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
             'default'
           }
         >
-          {price?price:'Price Pendinga'}
+          {price?price:'Price Pending'}
         </Label>
       </TableCell>
 
@@ -187,7 +183,17 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
 
                 <Box>x{5}</Box>
 
-                <Box sx={{ width: 110, textAlign: 'right' }}>{item.price?`GH₵ ${item.price}`:'Price N/A'}</Box>
+                <Box sx={{ width: 110, textAlign: 'right' }}>{item.price?`GH₵ ${item.price}`:
+                        <Label
+                        variant="soft"
+                        color={
+                          (item.price && 'primary') ||
+                          'default'
+                        }
+                      >
+                        {item.price?item.price:'Price N/A'}
+                      </Label>
+                }</Box>
               </Stack>
             ))}
           </Stack>
@@ -201,6 +207,12 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
       {renderPrimary}
 
       {renderSecondary}
+
+      <PricePopup
+                      referralDialog={priceDialog}
+                      handleClose={() => setPriceDialog(false)}
+                      data={row}
+                    />
 
       <CustomPopover
         open={popover.open}
@@ -217,6 +229,16 @@ export default function OrderTableRow({ row, selected, onViewRow, onSelectRow, o
         >
           <Iconify icon="icons8:cancel" />
           Cancel Order
+        </MenuItem>
+
+        <MenuItem
+          onClick={() => {
+            setPriceDialog(true)
+            popover.onClose();
+          }}
+        > 
+          <Iconify icon="tdesign:money" />
+          Set Price
         </MenuItem>
 
         <MenuItem

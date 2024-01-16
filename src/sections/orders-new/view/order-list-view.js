@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
@@ -41,6 +41,9 @@ import {
 import OrderTableRow from '../order-table-row';
 import OrderTableToolbar from '../order-table-toolbar';
 import OrderTableFiltersResult from '../order-table-filters-result';
+import axios from 'axios';
+// auth
+import { useAuthContext } from "src/auth/hooks";
 
 // ----------------------------------------------------------------------
 
@@ -48,10 +51,10 @@ const STATUS_OPTIONS = [{ value: 'all', label: 'All' }, ...ORDER_STATUS_OPTIONS]
 
 const TABLE_HEAD = [
   { id: 'orderNumber', label: 'Order', width: 116 },
-  { id: 'name', label: 'Customer' },
-  { id: 'createdAt', label: 'Date', width: 140 },
-  { id: 'totalQuantity', label: 'Items', width: 120, align: 'center' },
-  { id: 'totalAmount', label: 'Price', width: 140 },
+  { id: 'name', label: 'Patient' },
+  { id: 'names', label: 'Prescribed By' },
+  { id: 'createdAt', label: 'Date Ordered'},
+  { id: 'totalAmount', label: 'Total Price', width: 140 },
   { id: 'status', label: 'Status', width: 110 },
   { id: '', width: 88 },
 ];
@@ -73,8 +76,11 @@ export default function OrderListView() {
   const router = useRouter();
 
   const confirm = useBoolean();
+  const { logout, user } = useAuthContext();
+  const { token, facilityID } = user || {};
 
-  const [tableData, setTableData] = useState(_orders);
+  const [tempData,setTempData] = useState()
+  const [tableData, setTableData] = useState([]);
 
   const [filters, setFilters] = useState(defaultFilters);
 
@@ -89,6 +95,23 @@ export default function OrderListView() {
     filters,
     dateError,
   });
+
+
+
+  useEffect(()=> {
+    axios.get(`https://abibiman-api.onrender.com/prescriptions/facility/pending/${facilityID}`,{
+      headers: {
+        Authorization: `Basic ${token}`
+      }
+    })
+    .then(res => {
+      setTableData(res.data.data)
+
+    })
+    .catch(err => {
+      console.log(err.message)
+    })
+  },[])
 
   const dataInPage = dataFiltered.slice(
     table.page * table.rowsPerPage,
@@ -156,7 +179,7 @@ export default function OrderListView() {
     <>
       <Container maxWidth={settings.themeStretch ? false : 'lg'}>
         <CustomBreadcrumbs
-          heading="List"
+          heading="New Orders"
           links={[
             {
               name: 'Dashboard',
@@ -166,7 +189,7 @@ export default function OrderListView() {
               name: 'Order',
               href: paths.dashboard.order.root,
             },
-            { name: 'List' },
+            { name: 'New Orders' },
           ]}
           sx={{
             mb: { xs: 3, md: 5 },
@@ -174,47 +197,7 @@ export default function OrderListView() {
         />
 
         <Card>
-          <Tabs
-            value={filters.status}
-            onChange={handleFilterStatus}
-            sx={{
-              px: 2.5,
-              boxShadow: (theme) => `inset 0 -2px 0 0 ${alpha(theme.palette.grey[500], 0.08)}`,
-            }}
-          >
-            {STATUS_OPTIONS.map((tab) => (
-              <Tab
-                key={tab.value}
-                iconPosition="end"
-                value={tab.value}
-                label={tab.label}
-                icon={
-                  <Label
-                    variant={
-                      ((tab.value === 'all' || tab.value === filters.status) && 'filled') || 'soft'
-                    }
-                    color={
-                      (tab.value === 'completed' && 'success') ||
-                      (tab.value === 'pending' && 'warning') ||
-                      (tab.value === 'cancelled' && 'error') ||
-                      'default'
-                    }
-                  >
-                    {tab.value === 'all' && _orders.length}
-                    {tab.value === 'completed' &&
-                      _orders.filter((order) => order.status === 'completed').length}
 
-                    {tab.value === 'pending' &&
-                      _orders.filter((order) => order.status === 'pending').length}
-                    {tab.value === 'cancelled' &&
-                      _orders.filter((order) => order.status === 'cancelled').length}
-                    {tab.value === 'refunded' &&
-                      _orders.filter((order) => order.status === 'refunded').length}
-                  </Label>
-                }
-              />
-            ))}
-          </Tabs>
 
           <OrderTableToolbar
             filters={filters}

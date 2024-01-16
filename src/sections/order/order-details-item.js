@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
 import CardHeader from '@mui/material/CardHeader';
 import ListItemText from '@mui/material/ListItemText';
 // utils
 import { fCurrency } from 'src/utils/format-number';
 // components
 import Scrollbar from 'src/components/scrollbar';
+import { useAuthContext } from "src/auth/hooks";
+
 
 // ----------------------------------------------------------------------
 
@@ -20,7 +21,11 @@ export default function OrderDetailsItems({
   taxes,
   subTotal,
   totalAmount,
+  data
 }) {
+  const {  user } = useAuthContext();
+  const { role } = user || {};
+
   const renderTotal = (
     <Stack
       spacing={2}
@@ -29,11 +34,11 @@ export default function OrderDetailsItems({
     >
       <Stack direction="row">
         <Box sx={{ color: 'text.secondary' }}>Subtotal</Box>
-        <Box sx={{ width: 160, typography: 'subtitle2' }}>{fCurrency(subTotal) || '-'}</Box>
+        <Box sx={{ width: 160, typography: 'subtitle2' }}>GH₵{fCurrency(data.prescriptionData?.totalPrice)+'.00' || '-'}</Box>
       </Stack>
 
-      <Stack direction="row">
-        <Box sx={{ color: 'text.secondary' }}>Shipping</Box>
+      {role==="Admin"?<Stack direction="row">
+        <Box sx={{ color: 'text.secondary' }}>Delivery</Box>
         <Box
           sx={{
             width: 160,
@@ -42,7 +47,7 @@ export default function OrderDetailsItems({
         >
           {shipping ? `- ${fCurrency(shipping)}` : '-'}
         </Box>
-      </Stack>
+      </Stack>:<a></a>}
 
       <Stack direction="row">
         <Box sx={{ color: 'text.secondary' }}>Discount</Box>
@@ -55,15 +60,15 @@ export default function OrderDetailsItems({
           {discount ? `- ${fCurrency(discount)}` : '-'}
         </Box>
       </Stack>
-
+{/* 
       <Stack direction="row">
         <Box sx={{ color: 'text.secondary' }}>Taxes</Box>
         <Box sx={{ width: 160 }}>{taxes ? fCurrency(taxes) : '-'}</Box>
-      </Stack>
+      </Stack> */}
 
       <Stack direction="row" sx={{ typography: 'subtitle1' }}>
         <Box>Total</Box>
-        <Box sx={{ width: 160 }}>{fCurrency(totalAmount) || '-'}</Box>
+        <Box sx={{ width: 160 }}>GH₵{fCurrency(data.prescriptionData?.totalPrice)+'.00' || '-'}</Box>
       </Stack>
     </Stack>
   );
@@ -78,7 +83,7 @@ export default function OrderDetailsItems({
         }}
       >
         <Scrollbar>
-            {(items || []).map((item) => (
+            {(data.prescriptionData?.medications || []).map((item) => (
             <Stack
               key={item._id}
               direction="row"
@@ -104,10 +109,12 @@ export default function OrderDetailsItems({
                 }}
               />
 
-              <Box sx={{ typography: 'body2' }}>x5</Box>
+              <Box sx={{ width: 200, textAlign: 'center', typography: 'subtitle2'}}>{item.dosage}</Box>
+
+              <Box sx={{ typography: 'body2' }}>x{item.quantity}</Box>
 
               <Box sx={{ width: 110, textAlign: 'right', typography: 'subtitle2' }}>
-                $4342
+              GH₵{fCurrency(item.price)}.00
               </Box>
             </Stack>
           ))}

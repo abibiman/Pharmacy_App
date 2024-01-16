@@ -106,7 +106,7 @@ export default function OrderListView() {
     })
     .then(res => {
       setTableData(res.data.data)
-      console.log(res.data)
+
     })
     .catch(err => {
       console.log(err.message)

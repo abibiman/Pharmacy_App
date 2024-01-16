@@ -23,8 +23,10 @@ export default function OrderDetailsToolbar({
   orderNumber,
   statusOptions,
   onChangeStatus,
+  data
 }) {
   const popover = usePopover();
+  console.log(data)
 
   return (
     <>
@@ -42,22 +44,22 @@ export default function OrderDetailsToolbar({
 
           <Stack spacing={0.5}>
             <Stack spacing={1} direction="row" alignItems="center">
-              <Typography variant="h4"> Order {orderNumber} </Typography>
+              <Typography variant="h4"> Order #{data.prescriptionData?.orderNumber} </Typography>
               <Label
                 variant="soft"
                 color={
-                  (status === 'completed' && 'success') ||
-                  (status === 'pending' && 'warning') ||
-                  (status === 'cancelled' && 'error') ||
+                  (data.prescriptionData?.status === 'completed' && 'success') ||
+                  (data.prescriptionData?.status === 'pending' && 'warning') ||
+                  (data.prescriptionData?.status === 'cancelled' && 'error') ||
                   'default'
                 }
               >
-                {status}
+                {data.prescriptionData?.status}
               </Label>
             </Stack>
 
             <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-              {createdAt}
+              {data.prescriptionData?.datePrescribed}
             </Typography>
           </Stack>
         </Stack>
@@ -69,15 +71,7 @@ export default function OrderDetailsToolbar({
           alignItems="center"
           justifyContent="flex-end"
         >
-          <Button
-            color="inherit"
-            variant="outlined"
-            endIcon={<Iconify icon="eva:arrow-ios-downward-fill" />}
-            onClick={popover.onOpen}
-            sx={{ textTransform: 'capitalize' }}
-          >
-            {status}
-          </Button>
+
 
           <Button
             color="inherit"
@@ -87,31 +81,10 @@ export default function OrderDetailsToolbar({
             Print
           </Button>
 
-          <Button color="inherit" variant="contained" startIcon={<Iconify icon="solar:pen-bold" />}>
-            Edit
-          </Button>
         </Stack>
       </Stack>
 
-      <CustomPopover
-        open={popover.open}
-        onClose={popover.onClose}
-        arrow="top-right"
-        sx={{ width: 140 }}
-      >
-        {statusOptions.map((option) => (
-          <MenuItem
-            key={option.value}
-            selected={option.value === status}
-            onClick={() => {
-              popover.onClose();
-              onChangeStatus(option.value);
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))}
-      </CustomPopover>
+
     </>
   );
 }

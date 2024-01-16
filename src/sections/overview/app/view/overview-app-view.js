@@ -1,306 +1,98 @@
-import { useContext, useEffect, useState } from 'react';
 // @mui
+import { useTheme } from '@mui/material/styles';
+import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 // hooks
-import { AuthContext } from 'src/auth/context/jwt';
+import { useMockedUser } from 'src/hooks/use-mocked-user';
 // _mock
-import { _appFeatured, _appointments } from 'src/_mock';
+import { _appFeatured, _appAuthors, _appInstalled, _appRelated, _appInvoices } from 'src/_mock';
 // components
 import { useSettingsContext } from 'src/components/settings';
-import customAxios from 'src/utils/customAxios';
 // assets
 import { SeoIllustration } from 'src/assets/illustrations';
+import {
+  BookingIllustration,
+  CheckInIllustration,
+  CheckoutIllustration,
+} from 'src/assets/illustrations';
+import { _bookings, _bookingNew, _bookingsOverview, _bookingReview } from 'src/_mock';
+
 //
-import AppWelcome from '../welcome';
-import AppAppointments from '../appointments';
-import FromOurBlog from '../from-our-blog';
-import DeviceUsage from '../device-usage';
-import BloodPressureCard from '../blood-pressure-card';
+import AppWidget from '../app-widget';
+import AppWelcome from '../app-welcome';
+import AppFeatured from '../app-featured';
+import AppNewInvoice from '../app-new-invoice';
+import AppTopAuthors from '../app-top-authors';
+import AppTopRelated from '../app-top-related';
+import AppAreaInstalled from '../app-area-installed';
 import AppWidgetSummary from '../app-widget-summary';
-import { useTheme } from '@mui/material/styles';
-import newOrder from 'src/assets/images/checklist.png'
-import pendingOrder from 'src/assets/images/clockwise.png'
-import emergency from 'src/assets/images/alarm.png'
-import delayed from 'src/assets/images/clock.png'
-import completed from 'src/assets/images/checked.png'
-import waitOrder from 'src/assets/images/wait.png'
-import { de } from 'date-fns/locale';
-
-
-const demoAPI = [
-  {
-    orderNo: 'LO-21341',
-    patient: "John Ansah",
-    doctor: 'Dr. Phyllis Dwamenah',
-    reqDate: '2023-12-22',
-    orderDate: '2023-12-10',
-    orderType: 'EKG',
-    priority: 'Emergency',
-    fee: '100',
-    status: 'Order Confirmed',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-  },
-  {
-    orderNo: 'LO-21342',
-    patient: "Alice Johnson",
-    doctor: 'Dr. Mark Benson',
-    fee: '100',
-    orderDate: '2023-12-10',
-    reqDate: '2023-12-21',
-    orderType: 'Blood Test',
-    priority: 'Routine',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21343',
-    patient: "Michael Smith",
-    doctor: 'Dr. Susan Lee',
-    reqDate: '2023-12-20',
-    orderType: 'MRI',
-    orderDate: '2023-12-10',
-    priority: 'Urgent',
-    fee: '100',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21344',
-    patient: "Karen Davis",
-    doctor: 'Dr. John Okeke',
-    reqDate: '2023-12-19',
-    orderType: 'CT Scan',
-    fee: '100',
-    orderDate: '2023-12-10',
-    priority: 'Emergency',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21345',
-    patient: "Robert Brown",
-    doctor: 'Dr. Angela Yen',
-    reqDate: '2023-12-18',
-    fee: '100',
-    orderType: 'Ultrasound',
-    orderDate: '2023-12-10',
-    priority: 'Routine',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21346',
-    patient: "Linda Green",
-    doctor: 'Dr. Mohammed Alvi',
-    fee: '100',
-    reqDate: '2023-12-17',
-    orderDate: '2023-12-10',
-    orderType: 'X-Ray',
-    priority: 'Urgent',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21347',
-    patient: "Emily Clark",
-    doctor: 'Dr. Lisa Chang',
-    fee: '100',
-    reqDate: '2023-12-16',
-    orderType: 'Biopsy',
-    orderDate: '2023-12-09',
-    priority: 'Emergency',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21348',
-    patient: "James Wilson",
-    doctor: 'Dr. Kevin Schwartz',
-    reqDate: '2023-12-15',
-    fee: '100',
-    orderDate: '2023-12-08',
-    orderType: 'Echocardiogram',
-    priority: 'Routine',
-    status: 'Awaiting Confirmation',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21349',
-    patient: "Jessica Miller",
-    doctor: 'Dr. Amy Gupta',
-    orderDate: '2023-12-09',
-    fee: '100',
-    reqDate: '2023-12-14',
-    orderType: 'PET Scan',
-    priority: 'Urgent',
-    status: 'Order Confirmed',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',
-    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  },
-  {
-    orderNo: 'LO-21350',
-    patient: "William Turner",
-    orderDate: '2023-12-10',
-    fee: '100',
-    doctor: 'Dr. Carlos Hernandez',
-    reqDate: '2023-12-13',
-    orderType: 'Mammogram',
-    priority: 'Emergency',
-    status: 'Order Confirmed',
-    patientEmail: 'something@email.com',
-    patientPhone: '0232004242',
-    doctorEmail: 'doctor@email.com',
-    doctorPhone: '0232004242',    gender: 'male',
-    message: "lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-
-  }
-];
-
+import AppCurrentDownload from '../app-current-download';
+import AppTopInstalledCountries from '../app-top-installed-countries';
+import BookingBooked from '../booking-booked';
+import BookingNewest from '../booking-newest';
+import BookingDetails from '../booking-details';
+import BookingAvailable from '../booking-available';
+import BookingStatistics from '../booking-statistics';
+import BookingTotalIncomes from '../booking-total-incomes';
+import BookingWidgetSummary from '../booking-widget-summary';
+import BookingCheckInWidgets from '../booking-check-in-widgets';
+import BookingCustomerReviews from '../booking-customer-reviews';
+import { useAuthContext } from "src/auth/hooks";
+import {useNavigate} from 'react-router-dom'
 
 
 // ----------------------------------------------------------------------
 
+const SPACING = 3;
+
+
 export default function OverviewAppView() {
+  const Navigate = useNavigate()
+  const {  user } = useAuthContext();
+  console.log(user)
+  const { token,faciltyName } = user || {};
 
   const theme = useTheme();
-  const { user } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
-  const [tableData, setTableData] = useState([]);
 
   const settings = useSettingsContext();
-
-  
-
-  const getAllUserAppointments = async () => {
-    setLoading(true);
-    try {
-      const {
-        data: { data },
-      } = await customAxios.get(`/appointments/user/${user?.userID}`);
-
-      setTableData(data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getAllUserAppointments();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'xl'}>
       <Grid container spacing={3}>
-      <Grid xs={12} md={4}>
-          <AppWidgetSummary
+        <Grid xs={12} md={8}>
+          <AppWelcome
+            title={`Welcome back 👋 \n ${faciltyName}`}
+            description=" Ready to embark on another day of making a positive impact on health and wellness."
+            img={<SeoIllustration />}
+            action={
+              <Button variant="contained" color="primary" onClick={()=>Navigate('/dashboard/order/new') }>
+                New Orders
+              </Button>
+            }
+          />
+        </Grid>
+
+        <Grid xs={12} md={4}>
+          <AppFeatured list={_appFeatured} />
+        </Grid>
+
+        <Grid xs={12} md={4}>
+          <BookingWidgetSummary
             title="New Orders"
-            percent={2.6}
-            total={17}
-            im = {newOrder}
-            chart={{
-              series: [5, 18, 12, 51, 68, 11, 39, 37, 27, 20],
-            }}
+            total={31}
+            icon={<BookingIllustration />}
           />
         </Grid>
 
         <Grid xs={12} md={4}>
-          <AppWidgetSummary
-            title="Order In Progress"
-            im = {waitOrder}
-            percent={0.2}
-            total={12}
-            chart={{
-              colors: [theme.palette.info.light, theme.palette.info.main],
-              series: [20, 41, 63, 33, 28, 35, 50, 46, 11, 26],
-            }}
-          />
+          <BookingWidgetSummary title="In Progress" total={12} icon={<CheckInIllustration />} />
         </Grid>
-
 
         <Grid xs={12} md={4}>
-          <AppWidgetSummary
-            im={completed}
-            title="Completd Orders"
-            percent={-0.1}
-            total={34}
-            chart={{
-              colors: [theme.palette.warning.light, theme.palette.warning.main],
-              series: [8, 9, 31, 8, 16, 37, 8, 33, 46, 31],
-            }}
-          />
+          <BookingWidgetSummary title="Ready For Dispatch" total={6} icon={<CheckoutIllustration />} />
         </Grid>
-
-
-
- 
-
-
-
-
-        <Grid xs={12} lg={12}>
-          <AppAppointments
-            title="Emergency Orders"
-            tableData={demoAPI}
-            tableLabels={[
-              { id: 'id', label: 'OrderID' },
-              { id: 'pat', label: 'Patient' },
-              { id: 'dat', label: 'Date (YYYY-MM-DD)' },
-              { id: 'typ', label: 'Order Type' },
-              { id: 'prio', label: 'Priority' },
-
-            ]}
-          />
-        </Grid>
-
 
       </Grid>
     </Container>
